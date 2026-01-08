@@ -29,10 +29,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
 
   const navItems: NavItem[] = [
     { name: "Dashboard", icon: <Home size={20} />, href: "/dashboard" },
-    { name: "About", icon: <Monitor size={20} />, href: "/dashboard/about" },
-    { name: "Projects", icon: <Box size={20} />, href: "/dashboard/projects" },
-    { name: "Skills", icon: <GitBranch size={20} />, href: "/dashboard/skills" },
-    { name: "Experience", icon: <Star size={20} />, href: "/dashboard/experiences" },
+    { name: "Open Ups", icon: <Monitor size={20} />, href: "/dashboard/open-ups" },
+    { name: "CCs Products", icon: <Box size={20} />, href: "/dashboard/projects" },
+    { name: "Logs Products", icon: <GitBranch size={20} />, href: "/dashboard/skills" },
+    { name: "Setting", icon: <Star size={20} />, href: "/dashboard/experiences" },
     { name: "Contact", icon: <Mail size={20} />, href: "/dashboard/contact" },
   ];
 
