@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import {
-  Home,
-  Monitor,
-  Box,
-  GitBranch,
-  Mail,
-  Star,
+  LayoutDashboard,
+  FolderOpen,
+  CreditCard,
+  ScrollText,
+  Settings,
+  MessageSquare,
   Menu,
   X,
   Sparkles,
-  LogOut
+  LogOut,
+  User,
 } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface NavItem {
   name: string;
@@ -25,94 +26,129 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // <-- ADDED
 
   const navItems: NavItem[] = [
-    { name: "Dashboard", icon: <Home size={20} />, href: "/dashboard" },
-    { name: "Open Ups", icon: <Monitor size={20} />, href: "/dashboard/open-ups" },
-    { name: "CCs Products", icon: <Box size={20} />, href: "/dashboard/projects" },
-    { name: "Logs Products", icon: <GitBranch size={20} />, href: "/dashboard/skills" },
-    { name: "Setting", icon: <Star size={20} />, href: "/dashboard/experiences" },
-    { name: "Contact", icon: <Mail size={20} />, href: "/dashboard/contact" },
+    { name: "Dashboard", icon: <LayoutDashboard size={20} />, href: "/dashboard" },
+    { name: "Open Ups", icon: <FolderOpen size={20} />, href: "/dashboard/open-ups-list" },
+    { name: "CC Products", icon: <CreditCard size={20} />, href: "/dashboard/projects" },
+    { name: "Logs Products", icon: <ScrollText size={20} />, href: "/dashboard/skills" },
+    { name: "Settings", icon: <Settings size={20} />, href: "/dashboard/experiences" },
+    { name: "Contact", icon: <MessageSquare size={20} />, href: "/dashboard/contact" },
   ];
 
   const handleLogout = () => {
-    // Clear token or auth info (if stored)
-    localStorage.removeItem("token");
-    navigate("/"); // redirect to login
+    console.log("Logging out...");
+    // localStorage.removeItem("token");
+    // navigate("/");
+  };
+
+  const handleNavClick = (href: string) => {
+    navigate(href);       // <-- REAL NAVIGATION
+    setIsOpen(false);     // <-- CLOSE MOBILE MENU
   };
 
   return (
     <>
       {/* Mobile Hamburger */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-slate-200 dark:bg-slate-700/50 rounded-lg shadow-md"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
         onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle menu"
       >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
+        {isOpen ? (
+          <X size={24} className="text-gray-700 dark:text-gray-200" />
+        ) : (
+          <Menu size={24} className="text-gray-700 dark:text-gray-200" />
+        )}
       </button>
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full z-40 dark:bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900 bg-slate-50 dark:text-white
-        w-64 lg:w-64 flex flex-col shadow-2xl
-        transform transition-transform duration-300
+        className={`fixed top-0 left-0 h-full z-40 
+        bg-white dark:bg-gradient-to-b dark:from-slate-900 dark:via-slate-800 dark:to-slate-900
+        w-56 flex flex-col shadow-2xl border-r border-gray-200 dark:border-slate-700
+        transform transition-transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
-        {/* Profile Section */}
-        <div className="p-6 border-b border-slate-300 dark:border-slate-500">
+        {/* Header */}
+        <div className="p-6 border-b border-gray-200 dark:border-slate-700">
           <div className="flex flex-col items-center">
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 mb-4 shadow-lg ring-4 ring-slate-300 dark:ring-slate-700 overflow-hidden">
-              <img
-                src="/logo.jpeg"
-                alt="Admin Profile"
-                className="w-full h-full object-cover"
-              />
+            {/* Profile Image */}
+            <div className="relative mb-4">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 p-1 shadow-xl">
+                <div className="w-full h-full rounded-full bg-white dark:bg-slate-800 p-0.5 overflow-hidden">
+                  <img
+                    src="/logo.jpeg"
+                    alt="Admin Profile"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                </div>
+              </div>
+              {/* Status */}
+              <div className="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-3 border-white dark:border-slate-800 shadow-md"></div>
             </div>
-            <h2 className="font-bold text-lg text-center">MufasaopenUpsandLogs</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 text-center">
-              Admin
+
+            <h2 className="font-bold text-xl text-gray-900 dark:text-white text-center leading-tight">
+              Mufasa Admin
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5 flex items-center gap-1.5">
+              <User size={14} />
+              Administrator
             </p>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-6 px-3">
-          {navItems.map((item) => (
-            <NavLink
+        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+          {navItems.map((item, index) => (
+            <button
               key={item.name}
-              to={item.href}
-              onClick={() => setIsOpen(false)}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group
-                ${isActive ? "bg-gradient-to-r from-orange-600 to-orange-500 shadow-lg text-white" : "hover:bg-slate-200 dark:hover:bg-slate-700/50"}`
-              }
+              onClick={() => handleNavClick(item.href)}
+              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 group
+                ${index === 0
+                  ? "bg-blue-500 text-white shadow-lg shadow-blue-400/30"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-blue-500 hover:text-white hover:shadow-lg hover:shadow-blue-400/30"
+                }`}
             >
-              <span className="transition-transform duration-200 group-hover:scale-110">
+              <span
+                className={`transition-all duration-200 ${
+                  index === 0 ? "" : "group-hover:scale-110"
+                }`}
+              >
                 {item.icon}
               </span>
-              <span className="font-medium">{item.name}</span>
-            </NavLink>
+              <span className="font-medium text-sm">{item.name}</span>
+            </button>
           ))}
         </nav>
 
         {/* Bottom Controls */}
-        <div className="flex flex-col gap-2 py-4 px-4 border-t border-slate-300 dark:border-slate-700">
+        <div className="p-4 border-t border-gray-200 dark:border-slate-700 space-y-2">
           {onToggle3D && (
             <button
               onClick={onToggle3D}
-              className="w-10 h-10 flex items-center justify-center rounded-lg bg-transparent hover:bg-gray-600 transition-all duration-200 mb-2"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl
+                bg-gradient-to-r from-purple-500 to-indigo-600 text-white
+                hover:from-purple-600 hover:to-indigo-700 
+                transition-all duration-200 shadow-lg shadow-purple-500/30 hover:shadow-xl
+                font-medium text-sm"
             >
-              <Sparkles size={22} />
+              <Sparkles size={18} />
+              Toggle 3D
             </button>
           )}
 
-          {/* Logout Button */}
+          {/* Logout */}
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-red-600 transition-all duration-200 text-red-600 dark:text-red-400 dark:hover:bg-red-700 font-medium"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl
+              bg-gray-100 dark:bg-slate-800 text-red-600 dark:text-red-400
+              hover:bg-red-50 dark:hover:bg-red-900/20 hover:shadow-md
+              transition-all duration-200 font-medium text-sm border border-transparent
+              hover:border-red-200 dark:hover:border-red-800"
           >
-            <LogOut size={20} />
+            <LogOut size={18} />
             Logout
           </button>
         </div>
@@ -121,7 +157,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/30 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
