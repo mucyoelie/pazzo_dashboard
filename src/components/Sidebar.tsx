@@ -27,7 +27,7 @@ interface SidebarProps {
 const navItems: NavItem[] = [
   { name: "Dashboard", icon: <LayoutDashboard size={20} />, href: "/dashboard" },
   { name: "Open Ups", icon: <FolderOpen size={20} />, href: "/dashboard/open-ups-list" },
-  { name: "CC Products", icon: <CreditCard size={20} />, href: "/dashboard/projects" },
+  { name: "CCS Products", icon: <CreditCard size={20} />, href: "/dashboard/ccs-product-list" },
   { name: "Logs Products", icon: <ScrollText size={20} />, href: "/dashboard/skills" },
   { name: "Settings", icon: <Settings size={20} />, href: "/dashboard/experiences" },
   { name: "Contact", icon: <MessageSquare size={20} />, href: "/dashboard/contact" },
