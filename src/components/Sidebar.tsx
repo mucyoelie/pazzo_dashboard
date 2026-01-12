@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   FolderOpen,
@@ -12,7 +12,7 @@ import {
   LogOut,
   User,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface NavItem {
   name: string;
@@ -24,28 +24,44 @@ interface SidebarProps {
   onToggle3D?: () => void;
 }
 
+const navItems: NavItem[] = [
+  { name: "Dashboard", icon: <LayoutDashboard size={20} />, href: "/dashboard" },
+  { name: "Open Ups", icon: <FolderOpen size={20} />, href: "/dashboard/open-ups-list" },
+  { name: "CC Products", icon: <CreditCard size={20} />, href: "/dashboard/projects" },
+  { name: "Logs Products", icon: <ScrollText size={20} />, href: "/dashboard/skills" },
+  { name: "Settings", icon: <Settings size={20} />, href: "/dashboard/experiences" },
+  { name: "Contact", icon: <MessageSquare size={20} />, href: "/dashboard/contact" },
+];
+
 const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate(); // <-- ADDED
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0); // Dashboard default
 
-  const navItems: NavItem[] = [
-    { name: "Dashboard", icon: <LayoutDashboard size={20} />, href: "/dashboard" },
-    { name: "Open Ups", icon: <FolderOpen size={20} />, href: "/dashboard/open-ups-list" },
-    { name: "CC Products", icon: <CreditCard size={20} />, href: "/dashboard/projects" },
-    { name: "Logs Products", icon: <ScrollText size={20} />, href: "/dashboard/skills" },
-    { name: "Settings", icon: <Settings size={20} />, href: "/dashboard/experiences" },
-    { name: "Contact", icon: <MessageSquare size={20} />, href: "/dashboard/contact" },
-  ];
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Compute active tab safely (no warnings)
+  const activeRouteIndex = React.useMemo(() => {
+    const index = navItems.findIndex((item) => item.href === location.pathname);
+    return index !== -1 ? index : 0; // Default Dashboard
+  }, [location.pathname]);
+
+  // Update activeIndex when URL changes
+  useEffect(() => {
+    setActiveIndex(activeRouteIndex);
+  }, [activeRouteIndex]);
 
   const handleLogout = () => {
-    console.log("Logging out...");
-    // localStorage.removeItem("token");
-    // navigate("/");
+    localStorage.removeItem("token");
+    navigate("/");
+    setIsOpen(false);
   };
 
-  const handleNavClick = (href: string) => {
-    navigate(href);       // <-- REAL NAVIGATION
-    setIsOpen(false);     // <-- CLOSE MOBILE MENU
+  const handleNavClick = (href: string, index: number) => {
+    navigate(href);
+    setActiveIndex(index);
+    setIsOpen(false);
   };
 
   return (
@@ -74,7 +90,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
         {/* Header */}
         <div className="p-6 border-b border-gray-200 dark:border-slate-700">
           <div className="flex flex-col items-center">
-            {/* Profile Image */}
             <div className="relative mb-4">
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 p-1 shadow-xl">
                 <div className="w-full h-full rounded-full bg-white dark:bg-slate-800 p-0.5 overflow-hidden">
@@ -85,7 +100,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
                   />
                 </div>
               </div>
-              {/* Status */}
+
               <div className="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-3 border-white dark:border-slate-800 shadow-md"></div>
             </div>
 
@@ -101,26 +116,34 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-          {navItems.map((item, index) => (
-            <button
-              key={item.name}
-              onClick={() => handleNavClick(item.href)}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 group
-                ${index === 0
-                  ? "bg-blue-500 text-white shadow-lg shadow-blue-400/30"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-blue-500 hover:text-white hover:shadow-lg hover:shadow-blue-400/30"
-                }`}
-            >
-              <span
-                className={`transition-all duration-200 ${
-                  index === 0 ? "" : "group-hover:scale-110"
-                }`}
+          {navItems.map((item, index) => {
+            const isActive = index === activeIndex;
+            const isHovered = index === hoveredIndex;
+
+            return (
+              <button
+                key={item.name}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                onClick={() => handleNavClick(item.href, index)}
+                className={`
+                  w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 group
+                  ${
+                    isActive && !isHovered
+                      ? "bg-blue-600 text-white shadow-lg shadow-blue-400/30"
+                      : isHovered
+                      ? "bg-blue-500 text-white shadow-lg shadow-blue-400/30"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-blue-500 hover:text-white"
+                  }
+                `}
               >
-                {item.icon}
-              </span>
-              <span className="font-medium text-sm">{item.name}</span>
-            </button>
-          ))}
+                <span className={`transition-all duration-200 ${isHovered ? "scale-110" : ""}`}>
+                  {item.icon}
+                </span>
+                <span className="font-medium text-sm">{item.name}</span>
+              </button>
+            );
+          })}
         </nav>
 
         {/* Bottom Controls */}
@@ -139,7 +162,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
             </button>
           )}
 
-          {/* Logout */}
           <button
             onClick={handleLogout}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl

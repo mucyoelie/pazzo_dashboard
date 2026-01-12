@@ -7,7 +7,7 @@ export interface OpenUps {
   name: string;
   price: string;
   description: string;
-  image?: string;
+  image?: { data: string; contentType: string };
 }
 
 export default function OpenUpsList() {

@@ -7,7 +7,10 @@ interface OpenUps {
   name: string;
   price: string;
   description: string;
-  image?: string; // base64 string for display
+  image?: {
+    data: string; // base64 string for display
+    contentType: string;
+  };
 }
 
 interface OpenUpsFormProps {
@@ -25,6 +28,7 @@ export default function OpenUpsForm({
   const [price, setPrice] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -34,13 +38,21 @@ export default function OpenUpsForm({
       setName(editingItem.name);
       setPrice(editingItem.price);
       setDescription(editingItem.description);
-      setImage(null); // keep null unless user chooses new image
+      setImage(null);
+      
+      // Set preview from existing image
+      if (editingItem.image) {
+        setImagePreview(`data:${editingItem.image.contentType};base64,${editingItem.image.data}`);
+      } else {
+        setImagePreview("");
+      }
       setMessage("");
     } else {
       setName("");
       setPrice("");
       setDescription("");
       setImage(null);
+      setImagePreview("");
       setMessage("");
     }
   }, [editingItem]);
@@ -58,8 +70,24 @@ export default function OpenUpsForm({
         return;
       }
       setImage(file);
+      setImagePreview(URL.createObjectURL(file));
       setMessage("");
     }
+  };
+
+  // Convert File to Base64
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const result = reader.result as string;
+        // Remove the data URL prefix (e.g., "data:image/png;base64,")
+        const base64 = result.split(',')[1];
+        resolve(base64);
+      };
+      reader.onerror = (error) => reject(error);
+    });
   };
 
   // Submit Handler
@@ -75,26 +103,38 @@ export default function OpenUpsForm({
     setMessage("");
 
     try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("price", String(Number(price))); // Convert to number for backend
-      formData.append("description", description);
-      if (image) formData.append("image", image);
+      let imageData: { data: string; contentType: string } | undefined;
+
+      // Convert image to base64 if a new one is selected
+      if (image) {
+        const base64 = await fileToBase64(image);
+        imageData = {
+          data: base64,
+          contentType: image.type
+        };
+      }
+
+      const payload = {
+        name,
+        price: Number(price),
+        description,
+        ...(imageData && { image: imageData })
+      };
 
       if (editingItem?._id) {
         // Update existing OpenUps
         await axios.put(
           `http://localhost:5000/api/openups/${editingItem._id}`,
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
+          payload,
+          { headers: { "Content-Type": "application/json" } }
         );
         setMessage("Product updated successfully!");
       } else {
         // Create new OpenUps
         await axios.post(
           "http://localhost:5000/api/openups",
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
+          payload,
+          { headers: { "Content-Type": "application/json" } }
         );
         setMessage("Product added successfully!");
       }
@@ -140,7 +180,7 @@ export default function OpenUpsForm({
             disabled={isLoading}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900"
           />
         </div>
 
@@ -155,7 +195,7 @@ export default function OpenUpsForm({
             disabled={isLoading}
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900"
           />
         </div>
 
@@ -169,7 +209,7 @@ export default function OpenUpsForm({
             disabled={isLoading}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-1.5 border border-gray-300 rounded h-20 resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full px-3 py-1.5 border border-gray-300 rounded h-20 resize-none text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900"
           />
         </div>
 
@@ -183,23 +223,15 @@ export default function OpenUpsForm({
             accept="image/*"
             disabled={isLoading}
             onChange={handleImageChange}
-            className="w-full text-sm px-3 py-1.5 border border-dashed border-gray-300 rounded bg-gray-50 file:mr-2 file:py-1 file:px-3 file:border-0 file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+            className="w-full text-sm px-3 py-1.5 border border-dashed border-gray-300 rounded bg-gray-50 file:mr-2 file:py-1 file:px-3 file:border-0 file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 text-gray-900"
           />
-          {/* Show current image preview when editing */}
-          {editingItem?.image && !image && (
-             <img
-          src={editingItem.image}
-         alt="Preview"
-          className="mt-2 w-32 h-32 object-cover rounded border border-gray-300"
-  />
-          )}
-          {/* Show new image preview when user selects one */}
-          {image && (
-             <img
-          src={URL.createObjectURL(image)}
-         alt="Preview"
-          className="mt-2 w-32 h-32 object-cover rounded border border-gray-300"
-  />
+          {/* Show image preview */}
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="mt-2 w-32 h-32 object-cover rounded border border-gray-300"
+            />
           )}
         </div>
 
@@ -230,7 +262,3 @@ export default function OpenUpsForm({
     </div>
   );
 }
-
-
-
-
