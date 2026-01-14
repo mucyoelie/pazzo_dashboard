@@ -109,7 +109,7 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border p-2 rounded"
+          className="w-full border p-2 rounded text-gray-900"
         />
 
         {/* Price */}
@@ -119,7 +119,7 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
           required
           value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
-          className="w-full border p-2 rounded"
+          className="w-full border p-2 rounded text-gray-900"
         />
 
         {/* Description */}
@@ -128,7 +128,7 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
           required
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full border p-2 rounded"
+          className="w-full border p-2 rounded text-gray-900"
         />
 
         {/* File Input */}
