@@ -132,16 +132,9 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
         />
 
         {/* File Input */}
-        <input type="file" accept="image/*" onChange={handleImageChange} />
-
+       <input type="file" accept="image/*" onChange={handleImageChange} />
         {/* Preview */}
-        {imagePreview && (
-          <img
-            src={imagePreview}
-            alt="Preview"
-            className="w-32 h-32 object-cover rounded border"
-          />
-        )}
+        {imagePreview && <img src={imagePreview} alt="Preview" className="w-32 h-32 object-cover rounded border" />}
 
         {/* Buttons */}
         <div className="flex justify-end gap-2">
