@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-export interface CcsItem {
+export interface LogItem {
   _id?: string;
   name: string;
   price: number;
@@ -9,13 +9,13 @@ export interface CcsItem {
   image?: string | null;
 }
 
-interface CcsFormProps {
-  editingItem: CcsItem | null;
+interface LogsFormProps {
+  editingItem: LogItem | null;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
+function LogsForm({ editingItem, onSuccess, onCancel }: LogsFormProps) {
   const [name, setName] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [description, setDescription] = useState("");
@@ -28,7 +28,10 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
       setName(editingItem.name);
       setPrice(editingItem.price);
       setDescription(editingItem.description);
-      setImagePreview(editingItem.image ? `data:image/jpeg;base64,${editingItem.image}` : "");
+
+      if (editingItem.image) {
+        setImagePreview(`data:image/jpeg;base64,${editingItem.image}`);
+      }
     } else {
       setName("");
       setPrice(0);
@@ -38,7 +41,7 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
     }
   }, [editingItem]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setImage(file);
@@ -55,12 +58,13 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
       formData.append("name", name);
       formData.append("price", price.toString());
       formData.append("description", description);
+
       if (image) formData.append("image", image);
 
       if (editingItem?._id) {
-        await axios.put(`http://localhost:5000/api/ccs/${editingItem._id}`, formData);
+        await axios.put(`http://localhost:5000/api/firewalls/${editingItem._id}`, formData);
       } else {
-        await axios.post("http://localhost:5000/api/ccs", formData);
+        await axios.post("http://localhost:5000/api/firewalls", formData);
       }
 
       onSuccess();
@@ -72,8 +76,11 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
   };
 
   return (
-    <div className="bg-white p-6 rounded shadow max-w-xl mx-auto">
-      <h2 className="text-xl font-semibold mb-4">{editingItem ? "Edit CCS" : "Add CCS"}</h2>
+    <div className="bg-white p-5 rounded shadow max-w-xl mx-auto">
+      <h2 className="text-xl font-semibold mb-3">
+        {editingItem ? "Edit Log" : "Add Log"}
+      </h2>
+
       <form onSubmit={handleSubmit} className="space-y-3">
         <input
           type="text"
@@ -83,6 +90,7 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
+
         <input
           type="number"
           placeholder="Price"
@@ -91,6 +99,7 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
           value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
         />
+
         <textarea
           placeholder="Description"
           required
@@ -98,12 +107,12 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <input type="file" accept="image/*" onChange={handleImageChange} />
+
+        <input type="file" accept="image/*" onChange={handleImage} />
 
         {imagePreview && (
           <img
             src={imagePreview}
-            alt="Preview"
             className="w-32 h-32 object-cover rounded border"
           />
         )}
@@ -120,7 +129,7 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
           )}
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 bg-blue-600 text-white rounded"
           >
             {loading ? "Saving..." : editingItem ? "Update" : "Add"}
           </button>
@@ -130,4 +139,4 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
   );
 }
 
-export default CcsForm;
+export default LogsForm;

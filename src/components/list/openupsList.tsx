@@ -168,20 +168,22 @@ function OpenUpsList() {
                       <td className="px-4 py-2 font-medium">{item.name}</td>
                       <td className="px-4 py-2">{item.description}</td>
                       <td className="px-4 py-2 font-semibold">{item.price}</td>
-                      <td className="px-4 py-2 flex gap-2">
-                        <button 
-                          onClick={() => handleEdit(item)} 
+                      <td className="px-4 py-2">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleEdit(item)}
                           className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
                         >
                           Edit
                         </button>
-                        <button 
-                          onClick={() => item._id && handleDelete(item._id)} 
+                        <button
+                          onClick={() => item._id && handleDelete(item._id)}
                           className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
                         >
                           Delete
                         </button>
-                      </td>
+                      </div>
+                    </td>
                     </tr>
                   );
                 })

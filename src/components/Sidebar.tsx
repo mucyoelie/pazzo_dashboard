@@ -11,8 +11,11 @@ import {
   Sparkles,
   LogOut,
   User,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTheme } from "../hooks/useTheme"; // <-- your hook
 
 interface NavItem {
   name: string;
@@ -28,7 +31,7 @@ const navItems: NavItem[] = [
   { name: "Dashboard", icon: <LayoutDashboard size={20} />, href: "/dashboard" },
   { name: "Open Ups", icon: <FolderOpen size={20} />, href: "/dashboard/open-ups-list" },
   { name: "CCS Products", icon: <CreditCard size={20} />, href: "/dashboard/ccs-product-list" },
-  { name: "Logs Products", icon: <ScrollText size={20} />, href: "/dashboard/skills" },
+  { name: "Logs Products", icon: <ScrollText size={20} />, href: "/dashboard/logs-product-list" },
   { name: "Settings", icon: <Settings size={20} />, href: "/dashboard/experiences" },
   { name: "Contact", icon: <MessageSquare size={20} />, href: "/dashboard/contact" },
 ];
@@ -36,18 +39,20 @@ const navItems: NavItem[] = [
 const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0); // Dashboard default
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Compute active tab safely (no warnings)
+  // Use your hook
+  const { theme, toggleTheme } = useTheme();
+  const darkMode = theme === "dark";
+
   const activeRouteIndex = React.useMemo(() => {
     const index = navItems.findIndex((item) => item.href === location.pathname);
-    return index !== -1 ? index : 0; // Default Dashboard
+    return index !== -1 ? index : 0;
   }, [location.pathname]);
 
-  // Update activeIndex when URL changes
   useEffect(() => {
     setActiveIndex(activeRouteIndex);
   }, [activeRouteIndex]);
@@ -68,7 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
     <>
       {/* Mobile Hamburger */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-gray-100 dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle menu"
       >
@@ -82,10 +87,10 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
       {/* Sidebar */}
       <div
         className={`fixed top-0 left-0 h-full z-40 
-        bg-white dark:bg-gradient-to-b dark:from-slate-900 dark:via-slate-800 dark:to-slate-900
-        w-56 flex flex-col shadow-2xl border-r border-gray-200 dark:border-slate-700
-        transform transition-transform duration-300 ease-in-out
-        ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+          bg-white dark:bg-gradient-to-b dark:from-slate-900 dark:via-slate-800 dark:to-slate-900
+          w-56 flex flex-col shadow-2xl border-r border-gray-200 dark:border-slate-700
+          transform transition-transform duration-300 ease-in-out
+          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         {/* Header */}
         <div className="p-6 border-b border-gray-200 dark:border-slate-700">
@@ -93,20 +98,12 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
             <div className="relative mb-4">
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 p-1 shadow-xl">
                 <div className="w-full h-full rounded-full bg-white dark:bg-slate-800 p-0.5 overflow-hidden">
-                  <img
-                    src="/logo.jpeg"
-                    alt="Admin Profile"
-                    className="w-full h-full object-cover rounded-full"
-                  />
+                  <img src="/logo.jpeg" alt="Admin Profile" className="w-full h-full object-cover rounded-full" />
                 </div>
               </div>
-
               <div className="absolute bottom-1 right-1 w-5 h-5 bg-green-500 rounded-full border-3 border-white dark:border-slate-800 shadow-md"></div>
             </div>
-
-            <h2 className="font-bold text-xl text-gray-900 dark:text-white text-center leading-tight">
-              Mufasa Admin
-            </h2>
+            <h2 className="font-bold text-xl text-gray-900 dark:text-white text-center leading-tight">Mufasa Admin</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5 flex items-center gap-1.5">
               <User size={14} />
               Administrator
@@ -126,20 +123,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 onClick={() => handleNavClick(item.href, index)}
-                className={`
-                  w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 group
-                  ${
-                    isActive && !isHovered
-                      ? "bg-blue-600 text-white shadow-lg shadow-blue-400/30"
-                      : isHovered
-                      ? "bg-blue-500 text-white shadow-lg shadow-blue-400/30"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-blue-500 hover:text-white"
-                  }
-                `}
+                className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 group
+                  ${isActive && !isHovered
+                    ? "bg-blue-600 text-white shadow-lg shadow-blue-400/30"
+                    : isHovered
+                    ? "bg-blue-500 text-white shadow-lg shadow-blue-400/30"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-blue-500 hover:text-white"
+                  }`}
               >
-                <span className={`transition-all duration-200 ${isHovered ? "scale-110" : ""}`}>
-                  {item.icon}
-                </span>
+                <span className={`transition-all duration-200 ${isHovered ? "scale-110" : ""}`}>{item.icon}</span>
                 <span className="font-medium text-sm">{item.name}</span>
               </button>
             );
@@ -161,6 +153,21 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
               Toggle 3D
             </button>
           )}
+
+          {/* Dark/Light Mode Toggle */}
+          <button
+            onClick={toggleTheme}
+            className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl
+              transition-all duration-200 font-medium text-sm
+              ${
+                darkMode
+                  ? "bg-yellow-500 text-white hover:bg-yellow-400"
+                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+              }`}
+          >
+            {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+            {darkMode ? "Light Mode" : "Dark Mode"}
+          </button>
 
           <button
             onClick={handleLogout}

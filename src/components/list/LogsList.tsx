@@ -1,64 +1,59 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import CcsForm, { type CcsItem } from "../form/ccsForm";
+import LogsForm, { type LogItem } from "../form/logsForm";
 
-function CcsList() {
-  const [items, setItems] = useState<CcsItem[]>([]);
-  const [editingItem, setEditingItem] = useState<CcsItem | null>(null);
+function LogsList() {
+  const [logs, setLogs] = useState<LogItem[]>([]);
+  const [editingItem, setEditingItem] = useState<LogItem | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Fetch items with mounted flag to avoid cascading renders
-  const fetchItems = async () => {
+  const fetchLogs = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/ccs");
-      setItems(res.data);
+      const res = await axios.get("http://localhost:5000/api/firewalls");
+      setLogs(res.data);
     } catch (err) {
       console.error(err);
-      setMessage("Failed to fetch CCS items.");
+      setMessage("Failed to fetch logs.");
     }
-  };
-
+  }; 
   useEffect(() => {
-    let isMounted = true;
+    let mounted = true;
 
-    const loadItems = async () => {
+    const loadData = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/ccs");
-        if (isMounted) setItems(res.data); // SAFE setState
+        const res = await axios.get("http://localhost:5000/api/firewalls");
+        if (mounted) setLogs(res.data);
       } catch (err) {
         console.error(err);
-        if (isMounted) setMessage("Failed to fetch CCS items.");
+        if (mounted) setMessage("Failed to fetch logs.");
       }
     };
 
-    // Call async function
-    loadItems();
-
-    return () => {
-      isMounted = false;
-    };
+    loadData();
+    return () => { mounted = false; };
   }, []);
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/ccs/${id}`);
+      await axios.delete(`http://localhost:5000/api/firewalls/${id}`);
       setMessage("Item deleted successfully.");
-      fetchItems();
+      fetchLogs();
+      if (editingItem?._id === id) setEditingItem(null);
     } catch (err) {
       console.error(err);
       setMessage("Failed to delete item.");
     }
   };
 
-  const handleEdit = (item: CcsItem) => {
+  const handleEdit = (item: LogItem) => {
     setEditingItem(item);
     setShowForm(true);
     setMessage("");
   };
 
-  const handleCancel = () => {
+  const handleCancelEdit = () => {
     setEditingItem(null);
     setShowForm(false);
     setMessage("");
@@ -68,32 +63,45 @@ function CcsList() {
     setEditingItem(null);
     setShowForm(false);
     setMessage("Operation successful!");
-    fetchItems();
+    fetchLogs();
   };
 
   return (
     <div className="p-6">
+      {/* Header with button */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-3xl font-bold">
-          {showForm ? (editingItem ? "Edit CCS" : "Add CCS") : "CCS Management"}
+          {showForm ? (editingItem ? "Edit Log" : "Add Log") : "Logs Management"}
         </h1>
+
         <button
-          onClick={() => { setEditingItem(null); setShowForm(!showForm); }}
+          onClick={() => {
+            setEditingItem(null);
+            setShowForm(!showForm);
+            setMessage("");
+          }}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          {showForm ? "Close Form" : "Add CCS"}
+          {showForm ? "Close Form" : "Add Log"}
         </button>
       </div>
 
+      {/* Message display */}
       {message && (
-        <p className={`mb-4 text-sm ${message.includes("success") ? "text-green-600" : "text-red-600"}`}>
+        <p className={`mb-4 text-sm ${message.includes("successful") ? "text-green-600" : "text-red-600"}`}>
           {message}
         </p>
       )}
 
+      {/* Form */}
       {showForm ? (
-        <CcsForm editingItem={editingItem} onSuccess={handleSuccess} onCancel={handleCancel} />
+        <LogsForm
+          editingItem={editingItem}
+          onSuccess={handleSuccess}
+          onCancel={handleCancelEdit}
+        />
       ) : (
+        /* Table */
         <div className="overflow-x-auto mt-6">
           <table className="w-full border text-left text-sm text-gray-700 rounded">
             <thead className="bg-gray-200">
@@ -106,14 +114,14 @@ function CcsList() {
               </tr>
             </thead>
             <tbody>
-              {items.length === 0 ? (
+              {logs.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
-                    No items found. Click "Add CCS" to create one.
+                    No logs found. Click "Add Log" to create one.
                   </td>
                 </tr>
               ) : (
-                items.map((item) => (
+                logs.map((item) => (
                   <tr key={item._id} className="border-t hover:bg-gray-50">
                     <td className="px-4 py-2">
                       {item.image ? (
@@ -128,25 +136,25 @@ function CcsList() {
                         </div>
                       )}
                     </td>
-                    <td className="px-4 py-2 font-medium">{item.name}</td>
-                    <td className="px-4 py-2">{item.description}</td>
-                    <td className="px-4 py-2 font-semibold">{item.price}</td>
-                    <td className="px-4 py-2">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleEdit(item)}
-                          className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => item._id && handleDelete(item._id)}
-                          className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
+                    <td className="px-4 py-2 font-medium text-gray-900">{item.name}</td>
+                    <td className="px-4 py-2 text-gray-900">{item.description}</td>
+                    <td className="px-4 py-2 font-semibold text-gray-900">{item.price}</td>
+                   <td className="px-4 py-2">
+                        <div className="flex items-center gap-2">
+                            <button
+                            onClick={() => handleEdit(item)}
+                            className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                            >
+                            Edit
+                            </button>
+                            <button
+                            onClick={() => item._id && handleDelete(item._id)}
+                            className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                            >
+                            Delete
+                            </button>
+                        </div>
+                        </td>
                   </tr>
                 ))
               )}
@@ -158,4 +166,4 @@ function CcsList() {
   );
 }
 
-export default CcsList;
+export default LogsList;

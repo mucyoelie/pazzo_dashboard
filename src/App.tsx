@@ -3,11 +3,12 @@ import Login from "./pages/Login";
 import DashboardLayout from "./Layouts/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import OpenUpsList from "./components/list/openupsList";
-import CcsList from "./components/list/ccsList";
-
-
+//import CcsList from "./components/list/ccsList";
+import CcsList from "./components/list/CcsList";
+import LogsList from "./components/list/LogsList";
 function App() {
   return (
+    <div className="min-h-screen bg-white dark:bg-slate-900">
     <Router>
       <Routes>
         {/* Public Route */}
@@ -18,9 +19,11 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="open-ups-list" element={<OpenUpsList />} />
           <Route path="ccs-product-list" element={<CcsList/>}/>
+          <Route path="logs-product-list" element={<LogsList/>}/>
         </Route>
       </Routes>
     </Router>
+    </div>
   );
 }
 
