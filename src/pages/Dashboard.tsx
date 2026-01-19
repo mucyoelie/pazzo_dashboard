@@ -32,19 +32,19 @@ interface StatCardProps {
 // StatCard declared outside of render
 const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, loading }) => (
   <div
-    className={`dark:bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900  bg-slate-50 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1`}
+    className={` dark:bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900  bg-slate-50  p-6 rounded-xl shadow-lg hover:shadow-2xl dark:text-gray-900 transition-all duration-300 transform hover:-translate-y-1 `}
   >
     <div className="flex items-center justify-between mb-3">
       <div className="bg-white bg-opacity-20 p-3 rounded-lg">
-        <Icon className="w-6 h-6 text-white" />
+        <Icon className="w-6 h-6 dark:text-gray-100 text-gray-900" />
       </div>
       <TrendingUp className="w-5 h-5 text-white opacity-60" />
     </div>
-    <h3 className="text-white text-opacity-90 text-sm font-medium mb-1">{title}</h3>
+    <h3 className="dark:text-gray-100 text-gray-900 text-opacity-90 text-sm font-medium mb-1">{title}</h3>
     {loading ? (
       <div className="h-8 bg-white bg-opacity-20 rounded animate-pulse" />
     ) : (
-      <p className="text-2xl font-bold text-white">{value}</p>
+      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{value}</p>
     )}
   </div>
 );
@@ -140,14 +140,14 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen dark:bg-gray-900 bg-gray-100 p-4 sm:p-6 lg:p-8 ">
+      <div className="max-w-8xl mx-auto dark:bg-gray-900 bg-gray-100">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold dark:text-gray-100 text-gray-900 mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text  ">
             Admin Dashboard
           </h1>
-          <p className="text-gray-400">Welcome back! Here's your overview</p>
+          <p className="text-gray-900 dark:text-gray-100">Welcome back! Here's your overview</p>
         </div>
 
         {/* Analytics Cards */}
@@ -191,17 +191,17 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Bar Chart */}
-        <div className="bg-gray-800 bg-opacity-50 backdrop-blur-sm p-6 rounded-xl shadow-xl border border-gray-700">
-          <div className="flex items-center justify-between mb-6">
+        <div className="bg-gray-200 dark:bg-gray-700 bg-opacity-50 backdrop-blur-sm p-6 rounded-lg shadow-xl border dark:border-gray-700 border-gray-200">
+          <div className="flex items-center justify-between mb-6 ">
             <div>
-              <h2 className="text-2xl font-semibold text-white mb-1">Product Analytics</h2>
-              <p className="text-gray-400 text-sm">Distribution across categories</p>
+              <h2 className="text-2xl font-semibold dark:text-gray-100 text-gray-900 mb-1">Product Analytics</h2>
+              <p className="text-gray-900 dark:text-gray-100 text-sm">Distribution across categories</p>
             </div>
           </div>
           {loading ? (
-            <div className="h-64 bg-gray-700 bg-opacity-30 rounded-lg animate-pulse" />
+            <div className="h-64 dark:bg-gray-700 bg-gray-100 bg-opacity-30 rounded-lg animate-pulse" />
           ) : (
-            <div className="bg-gray-900 bg-opacity-40 p-4 rounded-lg">
+            <div className="dark:bg-gray-900 bg-gray-100  p-4 rounded-lg">
               <Bar data={barData} options={chartOptions} />
             </div>
           )}

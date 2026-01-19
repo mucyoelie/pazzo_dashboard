@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 
 const DashboardLayout: React.FC = () => {
   return (
-    <div className="flex min-h-screen bg-gray-900 text-white">
+    <div className="flex min-h-screen dark:bg-gray-900 bg-gray-100 text-white">
       {/* Sidebar */}
       <Sidebar />
 
