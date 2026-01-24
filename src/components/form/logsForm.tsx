@@ -86,7 +86,7 @@ function LogsForm({ editingItem, onSuccess, onCancel }: LogsFormProps) {
           type="text"
           placeholder="Name"
           required
-          className="w-full border rounded p-2"
+          className="w-full border rounded p-2 text-gray-900"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -95,7 +95,7 @@ function LogsForm({ editingItem, onSuccess, onCancel }: LogsFormProps) {
           type="number"
           placeholder="Price"
           required
-          className="w-full border rounded p-2"
+          className="w-full border rounded p-2 text-gray-900"
           value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
         />
@@ -103,7 +103,7 @@ function LogsForm({ editingItem, onSuccess, onCancel }: LogsFormProps) {
         <textarea
           placeholder="Description"
           required
-          className="w-full border rounded p-2"
+          className="w-full border rounded p-2 text-gray-900"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />

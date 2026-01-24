@@ -5,7 +5,6 @@ import {
   CreditCard,
   ScrollText,
   Settings,
-  MessageSquare,
   Menu,
   X,
   Sparkles,
@@ -33,7 +32,6 @@ const navItems: NavItem[] = [
   { name: "CCS Products", icon: <CreditCard size={20} />, href: "/dashboard/ccs-product-list" },
   { name: "Logs Products", icon: <ScrollText size={20} />, href: "/dashboard/logs-product-list" },
   { name: "Settings", icon: <Settings size={20} />, href: "/dashboard/experiences" },
-  { name: "Contact", icon: <MessageSquare size={20} />, href: "/dashboard/contact" },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
@@ -165,8 +163,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
                   : "bg-gray-200 text-gray-800 hover:bg-gray-300"
               }`}
           >
-            {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-            {darkMode ? "Light Mode" : "Dark Mode"}
+            {darkMode ? <Moon size={18} /> : <Sun size={18} />}
+            {darkMode ? "Dark Mode" : "Light Mode"}
           </button>
 
           <button

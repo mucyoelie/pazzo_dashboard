@@ -165,14 +165,14 @@ function OpenUpsList() {
                           </div>
                         )}
                       </td>
-                      <td className="px-4 py-2 font-medium">{item.name}</td>
-                      <td className="px-4 py-2">{item.description}</td>
-                      <td className="px-4 py-2 font-semibold">{item.price}</td>
+                      <td className="px-4 py-2 font-medium text-gray-900 dark:text-gray-100">{item.name}</td>
+                      <td className="px-4 py-2 text-gray-900 dark:text-gray-100">{item.description}</td>
+                      <td className="px-4 py-2 font-semibold text-gray-900 dark:text-gray-100">{item.price}</td>
                       <td className="px-4 py-2">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleEdit(item)}
-                          className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                          className="bg-green-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
                         >
                           Edit
                         </button>
