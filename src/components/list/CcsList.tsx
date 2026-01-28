@@ -11,7 +11,7 @@ function CcsList() {
   // Fetch items with mounted flag to avoid cascading renders
   const fetchItems = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/ccs");
+      const res = await axios.get("https://pazzo-backend.onrender.com/api/ccs");
       setItems(res.data);
     } catch (err) {
       console.error(err);
@@ -24,7 +24,7 @@ function CcsList() {
 
     const loadItems = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/ccs");
+        const res = await axios.get("https://pazzo-backend.onrender.com/api/ccs");
         if (isMounted) setItems(res.data); // SAFE setState
       } catch (err) {
         console.error(err);
@@ -43,7 +43,7 @@ function CcsList() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/ccs/${id}`);
+      await axios.delete(`https://pazzo-backend.onrender.com/api/ccs/${id}`);
       setMessage("Item deleted successfully.");
       fetchItems();
     } catch (err) {

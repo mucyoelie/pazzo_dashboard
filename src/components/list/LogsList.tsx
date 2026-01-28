@@ -10,7 +10,7 @@ function LogsList() {
 
   const fetchLogs = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/firewalls");
+      const res = await axios.get("https://pazzo-backend.onrender.com/api/firewalls");
       setLogs(res.data);
     } catch (err) {
       console.error(err);
@@ -22,7 +22,7 @@ function LogsList() {
 
     const loadData = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/firewalls");
+        const res = await axios.get("https://pazzo-backend.onrender.com/api/firewalls");
         if (mounted) setLogs(res.data);
       } catch (err) {
         console.error(err);
@@ -37,7 +37,7 @@ function LogsList() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/firewalls/${id}`);
+      await axios.delete(`https://pazzo-backend.onrender.com/api/firewalls/${id}`);
       setMessage("Item deleted successfully.");
       fetchLogs();
       if (editingItem?._id === id) setEditingItem(null);

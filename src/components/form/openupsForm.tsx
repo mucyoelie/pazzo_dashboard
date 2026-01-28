@@ -65,12 +65,12 @@ interface OpenUpsFormProps {
       if (image) formData.append("image", image);
 
       if (editingItem?._id) {
-        await axios.put(`http://localhost:5000/api/openups/${editingItem._id}`, formData, {
+        await axios.put(`https://pazzo-backend.onrender.com/api/openups/${editingItem._id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         setMessage("Product updated successfully!");
       } else {
-        await axios.post("http://localhost:5000/api/openups", formData, {
+        await axios.post("https://pazzo-backend.onrender.com/api/openups", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         setMessage("Product added successfully!");

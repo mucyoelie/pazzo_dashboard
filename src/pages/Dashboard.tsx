@@ -60,9 +60,9 @@ const Dashboard: React.FC = () => {
     const fetchAnalytics = async () => {
       try {
         const [ccsRes, openUpsRes, logRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/ccs"),
-          axios.get("http://localhost:5000/api/openups"),
-          axios.get("http://localhost:5000/api/firewalls"),
+          axios.get("https://pazzo-backend.onrender.com/api/ccs"),
+          axios.get("https://pazzo-backend.onrender.com/api/openups"),
+          axios.get("https://pazzo-backend.onrender.com/api/firewalls"),
         ]);
 
         const ccsData: ProductItem[] = ccsRes.data;

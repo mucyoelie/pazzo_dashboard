@@ -8,7 +8,7 @@ import CcsList from "./components/list/CcsList";
 import LogsList from "./components/list/LogsList";
 function App() {
   return (
-    <div className="dark:bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900  bg-slate-50  ">
+    <div className="dark:bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-900 bg-slate-50 font-poppins ">
     <Router>
       <Routes>
         {/* Public Route */}

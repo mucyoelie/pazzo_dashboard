@@ -10,7 +10,7 @@ function OpenUpsList() {
 
   const fetchOpenUps = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/openups");
+      const res = await axios.get("https://pazzo-backend.onrender.com/api/openups");
       setOpenUps(res.data);
     } catch (error) {
       console.error(error);
@@ -23,7 +23,7 @@ function OpenUpsList() {
     
     const loadData = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/openups");
+        const res = await axios.get("https://pazzo-backend.onrender.com/api/openups");
         console.log("=== FULL RESPONSE ===");
         console.log("Response data:", res.data);
         
@@ -61,7 +61,7 @@ function OpenUpsList() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/openups/${id}`);
+      await axios.delete(`https://pazzo-backend.onrender.com/api/openups/${id}`);
       setMessage("Item deleted successfully.");
       fetchOpenUps();
       if (editingItem?._id === id) setEditingItem(null);

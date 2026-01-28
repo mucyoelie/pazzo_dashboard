@@ -58,9 +58,9 @@ function CcsForm({ editingItem, onSuccess, onCancel }: CcsFormProps) {
       if (image) formData.append("image", image);
 
       if (editingItem?._id) {
-        await axios.put(`http://localhost:5000/api/ccs/${editingItem._id}`, formData);
+        await axios.put(`https://pazzo-backend.onrender.com/api/ccs/${editingItem._id}`, formData);
       } else {
-        await axios.post("http://localhost:5000/api/ccs", formData);
+        await axios.post("https://pazzo-backend.onrender.com/api/ccs", formData);
       }
 
       onSuccess();

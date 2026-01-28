@@ -62,9 +62,9 @@ function LogsForm({ editingItem, onSuccess, onCancel }: LogsFormProps) {
       if (image) formData.append("image", image);
 
       if (editingItem?._id) {
-        await axios.put(`http://localhost:5000/api/firewalls/${editingItem._id}`, formData);
+        await axios.put(`https://pazzo-backend.onrender.com/api/firewalls/${editingItem._id}`, formData);
       } else {
-        await axios.post("http://localhost:5000/api/firewalls", formData);
+        await axios.post("https://pazzo-backend.onrender.com/api/firewalls", formData);
       }
 
       onSuccess();
