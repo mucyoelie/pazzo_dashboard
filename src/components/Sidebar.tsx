@@ -31,7 +31,7 @@ const navItems: NavItem[] = [
   { name: "Open Ups", icon: <FolderOpen size={20} />, href: "/dashboard/open-ups-list" },
   { name: "CCS Products", icon: <CreditCard size={20} />, href: "/dashboard/ccs-product-list" },
   { name: "Logs Products", icon: <ScrollText size={20} />, href: "/dashboard/logs-product-list" },
-  { name: "Settings", icon: <Settings size={20} />, href: "/dashboard/experiences" },
+  { name: "Settings", icon: <Settings size={20} />, href: "/dashboard/setting" },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ onToggle3D }) => {
